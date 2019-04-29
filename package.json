@@ -1,0 +1,43 @@
+{
+  "name": "att-card",
+  "version": "0.1.1",
+  "description": "the web game in JavaScript / HTML / CSS",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "supervisor app.js",
+    "debug": "nodemon --inspect app.js"
+  },
+  "keywords": [
+    "JavaScript",
+    "Web Game"
+  ],
+  "author": "zhangjun",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.16.4",
+    "express-session": "^1.16.0",
+    "jquery": "^3.4.0"
+  },
+  "repository": {
+    "url": "https://github.com/xiaomomo123/Att-Card"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "babel-cli": "^6.26.0",
+    "babel-loader": "^8.0.5",
+    "babel-preset-env": "^1.7.0",
+    "browserify": "^16.2.3",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "gulp": "^4.0.0",
+    "gulp-babel": "^8.0.0",
+    "nodemon": "^1.18.11",
+    "underscore": "^1.9.1",
+    "vinyl-source-stream": "^2.0.0",
+    "webpack": "^4.29.6"
+  }
+}
