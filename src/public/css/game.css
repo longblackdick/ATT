@@ -1,0 +1,147 @@
+#header {
+  background-color: rgb(172, 87, 160);
+  height: 64px;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 16px;
+  z-index: 32;
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: nowrap;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+}
+
+#profile {
+  float: right;
+}
+
+#profile ul li {
+  display: inline-block;
+  width: 64px;
+  height: 48px;
+  list-style: none;
+}
+
+#content {
+  width: 800px;
+  margin: 0 auto;
+}
+
+/*
+* header
+*/
+.title {
+  line-height: 2.0;
+  display: inline-block;
+  padding: 10px 0px;
+  box-sizing: border-box;
+}
+
+.scoreboard {
+  width: 100%;
+  height: 300px;
+  background-color: #232f34;
+  border-radius: 5px;
+  /* box-shadow: #344955 5px 5px; */
+}
+
+.sb-left {
+  width: 50%;
+  height: inherit;
+  float: left;
+  /* border: #cde solid 3px; */
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.sb-right {
+  width: 50%;
+  height: inherit;
+  float: right;
+  /* border: #cde solid 3px; */
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.sb-left table {
+  /* border: #cde solid 1px; */
+  width: 100%;
+}
+
+.sb-left table td {
+  /* border: #cde solid 0px; */
+  border: 0px;
+  padding: 5px 15px;
+}
+
+.sb-left table tr {
+  /* border: #cde solid 0px; */
+  /* border: #cde solid 1px; */
+  padding: 5px 15px;
+}
+
+.sb-right table {
+  table-layout: auto;
+  width: 100%;
+}
+
+.sb-right table td {
+  padding: 2px;
+}
+
+/*
+* card
+*/
+.card {
+  width: 100%;
+  height: 200px;
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.img-box {
+  height: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.cardImg {
+  height: 200px;
+  margin: 0 5px;
+}
+
+/*
+* operation
+*/
+.operation {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.opBtn {
+  padding: 0 10px;
+  text-align: center;
+  border: #232f34 solid 1px;
+  border-radius: 3px;
+  box-sizing: border-box;
+  height: 30px;
+  width: 70px;
+}
+
+#pour_input,
+#plus,
+#minus,
+#startBtn {
+  padding: 0 10px;
+  text-align: center;
+  border: #232f34 solid 1px;
+  border-radius: 3px;
+  box-sizing: border-box;
+  height: 30px;
+  width: 70px;
+}

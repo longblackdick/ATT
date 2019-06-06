@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ATT连环炮</title>
+  <link rel="shortcut icon" href="/images/Coin.png" type="image/x-icon">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/game.css">
+</head>
+
+<body>
+  <div id="content">
+    <div class="header">
+      <h1 class="title"><span style="color: red; margin-right: 20px;">|</span>欢迎来到ATT连环炮</h1>
+      <span id="gameStatus">WATING</span>
+    </div>
+    <!-- scoreboard START -->
+    <div class="scoreboard">
+      <div class="sb-left">
+        <!--         <table>
+          <tr>
+            <th rowspan="4">彩金</th>
+            <td>五条</td>
+            <td id="bonus_0">7500</td>
+          </tr>
+          <tr>
+            <td>同花大顺</td>
+            <td id="bonus_1">2500</td>
+          </tr>
+          <tr>
+            <td>同花顺</td>
+            <td id="bonus_2">1500</td>
+          </tr>
+          <tr>
+            <td>四条</td>
+            <td id="bonus_3">2500</td>
+          </tr>
+        </table> -->
+        <table>
+          <tr>
+            <td>彩型</td>
+            <td id="result">...</td>
+          </tr>
+          <tr>
+            <td>彩币</td>
+            <td id="bonus_coin">...</td>
+          </tr>
+          <tr>
+            <td>押分</td>
+            <td id="pour_coin">...</td>
+          </tr>
+          <tr>
+            <td>总金币</td>
+            <td id="total_coin">...</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="sb-right">
+        <div>
+          <table>
+            <tr>
+              <td>5K</td>
+              <td id="poker_0">0</td>
+            </tr>
+            <tr>
+              <td>RS</td>
+              <td id="poker_1">0</td>
+            </tr>
+            <tr>
+              <td>SF</td>
+              <td id="poker_2">0</td>
+            </tr>
+            <tr>
+              <td>4K</td>
+              <td id="poker_3">0</td>
+            </tr>
+            <tr>
+              <td>FH</td>
+              <td id="poker_4">0</td>
+            </tr>
+            <tr>
+              <td>FL</td>
+              <td id="poker_5">0</td>
+            </tr>
+            <tr>
+              <td>ST</td>
+              <td id="poker_6">0</td>
+            </tr>
+            <tr>
+              <td>3K</td>
+              <td id="poker_7">0</td>
+            </tr>
+            <tr>
+              <td>2P</td>
+              <td id="poker_8">0</td>
+            </tr>
+            <tr>
+              <td>1P</td>
+              <td id="poker_9">0</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- scoreboard END -->
+    <!-- cardboard START -->
+    <div class="card">
+      <div class="img-box">
+        <img src="/images/cards/Gold.png" class="cardImg" id="cardImg_0" alt="卡牌图片">
+        <span id="card_label_0">HOLD</span>
+      </div>
+      <div class="img-box">
+        <img src="/images/cards/Gold.png" class="cardImg" id="cardImg_1" alt="卡牌图片">
+        <span id="card_label_1">HOLD</span>
+      </div>
+      <div class="img-box">
+        <img src="/images/cards/Gold.png" class="cardImg" id="cardImg_2" alt="卡牌图片">
+        <span id="card_label_2">HOLD</span>
+      </div>
+      <div class="img-box">
+        <img src="/images/cards/Gold.png" class="cardImg" id="cardImg_3" alt="卡牌图片">
+        <span id="card_label_3">HOLD</span>
+      </div>
+      <div class="img-box">
+        <img src="/images/cards/Gold.png" class="cardImg" id="cardImg_4" alt="卡牌图片">
+        <span id="card_label_4">HOLD</span>
+      </div>
+    </div>
+    <!-- scoreboard END -->
+    <!-- optionBoard START -->
+    <div class="operation">
+      <div>
+        <input id="pour_input" type="text" value="0" disabled />
+        <button id="plus">+</button>
+        <button id="minus">-</button>
+        <button id="startBtn" class="btn-default">POUR</button>
+      </div>
+    </div>
+  </div>
+  <!-- optionBoard END -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <!-- <script src="/js/lib/jquery-3.3.1.js"></script> -->
+  <!-- <script src="/js/index.js"></script> -->
+  <script>
+
+    "use strict";
+
+    // //////////////////////////////////
+    // DOM 对象 (Jquery)
+    // //////////////////////////////////
+
+    const statusLab = $('#gameStatus'); // 状态提示 - label
+    const resultText = $('#result'); // 结果 - label
+    const bonusCoinLab = $('#bonus_coin'); // 奖金牌 - label
+    const pourCoinLab = $('#pour_coin'); // 下注金额 - label
+    const totalCoinLab = $('#total_coin'); // 总分牌 - label
+
+    const pourInput = $('#pour_input'); // 加注输入框 - input
+    const startBtn = $('#startBtn'); // 开始按钮 - button
+    const plusBtn = $('#plus'); // 加注按钮 - button
+    const minusBtn = $('#minus'); // 减注按钮 - button
+
+    //
+    // label型对象
+    //
+    // const bonusText = []; // 奖金池记分牌 - label
+    const pokersText = []; // 牌型记分牌 - label
+    const cardImages = []; // 卡牌的图片 - image 
+    const cardLabels = []; // 卡牌的label - label
+    // for (let i = 0; i < 4; i += 1) {
+    //     // 获取彩金的html对象
+    //     bonusText.push($(`#bonus_${i}`));
+    // }
+
+    for (let i = 0; i < 10; i += 1) {
+      // 获取牌组组合的html对象
+      pokersText.push($(`#poker_${i}`));
+    }
+
+    for (let i = 0; i < 5; i += 1) {
+      // 获取牌和提示标签的html对象
+      cardImages.push($(`#cardImg_${i}`));
+      cardLabels.push($(`#card_label_${i}`));
+    }
+
+    // environment variables
+    const baseUrl = ''; // 基础的url
+    const pokersRate = [
+      750, 250, 150, 60, 10, 7, 5, 3, 2, 1,
+    ];
+    const gameState = {
+      waiting: 0,
+      running: 1,
+      ending: 2,
+    };
+
+    /** 当前用户的用户信息 */
+    let userInfo = {
+      id: 0,
+      name: '',
+      avatar: '',
+      signature: '',
+      coin: 0
+    };
+
+    /** 当前游戏状态 本地状态 */
+    let state = {
+      status: 0, // 游戏状态码： 0 ， 1 ， 2
+      desc: 'waiting',
+      playBtnLab: 'pour'
+    };
+
+    /** 当前房间信息 */
+    let room = {
+      id: 0,
+      name: '新手场',
+      max_user_coin: 0,
+      min_user_coin: 0,
+      max_pour_coin: 2000,
+      min_pour_coin: 0,
+    };
+
+    /** 当前游戏属性 需要与服务器端交互 */
+    let game = {
+      pourCoin: 0, // 下注金额
+      bonusCoin: 0,
+      totalCoin: 0, // 总金额
+      result: '...',
+      keep: [],  // 保留下来的扑克牌
+      cards: new Array(5).fill({ path: '/images/cards/Gold.png' })
+    };
+
+    const origin = {
+      cards: new Array(5).fill({ path: '/images/cards/Gold.png' })
+    };
+
+    /**
+     * 设置卡面图案
+     * @param {CardGroup} cards 牌组对象数组
+     */
+    const updateCards = (cards) => {
+      for (let i = 0; i < cards.length; i += 1) {
+        cardImages[i].attr('src', cards[i].path);
+      }
+    };
+
+    const switchData = (data) => {
+      game.pourCoin = data.pourCoin ? data.pourCoin : game.pourCoin;
+      game.bonusCoin = typeof data.winCoin === 'undefined' ? data.winCoin : game.bonusCoin;
+      game.totalCoin = data.currentCoin ? data.currentCoin : game.totalCoin;
+      game.result = data.result ? data.result : game.result;
+      game.keep = data.keep ? data.keep : game.keep;
+      game.cards = data.cards ? data.cards : game.cards;
+    };
+
+    /**
+     * 修改下注金额
+     * @param {number} score 下注金额变化量 > 0 为 +, < 0 为 -
+     */
+    const changePour = (score) => {
+      game.pourCoin += score;
+      if (game.pourCoin < room.min_pour_coin) {
+        game.pourCoin = room.min_pour_coin;
+      } else if (game.pourCoin > room.max_pour_coin) {
+        game.pourCoin = room.max_pour_coin;
+      }
+    };
+
+
+    /**
+     * 更新奖金表格
+     * @param {number} score 下注金额
+     */
+    const updateBonusTable = (score) => {
+      pourInput.val(score);
+      pourCoinLab.text(game.pourCoin);
+      for (let i = 0; i < pokersRate.length; i += 1) {
+        const td = pokersText[i];
+        td.text(score * pokersRate[i]);
+      }
+    };
+    // /////////////////////////////////////////////////////////////////////////////
+    //
+    // 初始化
+    // /////////////////////////////////////////////////////////////////////////////
+
+    (() => {
+      startBtn.text('POUR');
+      statusLab.text('WAITING');
+
+      $.post('/user/init', {
+        code: 0,
+      }, (res) => {
+        if (res.code) {
+          alert(res.desc);
+          return;
+        }
+        userInfo = res.data;
+        game.totalCoin = userInfo.coin;
+        // totalCoinLab.text(userInfo.coin);
+      });
+
+      $.post('/game/init', {}, (res) => {
+        if (res.code) {
+          alert(res.desc);
+          return;
+        }
+        room = res.data.room;
+        game.pourCoin = room.min_pour_coin;
+        pourInput.val(game.pourCoin);
+        updateBonusTable(game.pourCoin);
+      })
+    })();
+
+    // /////////////////////////////////////////////////////////////////////////////
+    //
+    // 事件绑定
+    // /////////////////////////////////////////////////////////////////////////////
+
+
+    const handlePlusBtn = () => {
+      changePour(100);
+      updateBonusTable(game.pourCoin);
+    }
+
+    const handleMinusBtn = () => {
+      changePour(-100);
+      updateBonusTable(game.pourCoin);
+    }
+
+    /**
+     * 加注按钮, 绑定点击事件
+     */
+    plusBtn.on('click', handlePlusBtn);
+
+    let handle;
+    plusBtn.on('mousedown', () => {
+      handle = setInterval(() => {
+        handlePlusBtn();
+      }, 100);
+    });
+
+    plusBtn.on('mouseup', () => {
+      clearInterval(handle);
+    });
+
+    plusBtn.on('mouseout', () => {
+      clearInterval(handle);
+    });
+
+    /**
+     * 减注按钮, 绑定点击事件
+     */
+    minusBtn.on('click', handleMinusBtn);
+
+    minusBtn.on('mousedown', () => {
+      handle = setInterval(() => {
+        handleMinusBtn();
+      }, 100);
+    });
+
+    minusBtn.on('mouseup', () => {
+      clearInterval(handle);
+    });
+
+    minusBtn.on('mouseout', () => {
+      clearInterval(handle);
+    });
+
+    /**
+     * 设置每张牌的click事件
+     */
+    for (let i = 0; i < 5; i += 1) {
+      const card = cardImages[i];
+      const text = cardLabels[i];
+      text.isShown = false;
+      text.hide();
+      // 显示文字 text.show()
+      // 隐藏文字 text.hide()
+      card.on('click', () => {
+        text.isShown = !text.isShown;
+        if (text.isShown) {
+          text.show();
+          game.keep.push(i);
+        } else {
+          text.hide();
+          delete game.keep[game.keep.indexOf(i)];
+        }
+        const temp = [];
+        game.keep.forEach((e) => {
+          if (e || e === 0) {
+            temp.push(e);
+          }
+        });
+        game.keep = temp; // keep => [0,1,2,4]
+        game.keep.sort();
+      });
+    }
+
+    /**
+     * 界面设置
+     * @param {number} toStatus 游戏进行状态（下一步）
+     */
+    const setToStatus = (toStatus) => {
+      state.status = toStatus;
+      // 完全重置游戏状态 -- 等待
+      if (state.status === gameState.waiting) {
+        state.status = 0;
+        state.desc = 'Waiting';
+        state.playBtnLab = 'Pour';
+
+        switchData({
+          pourCoin: room.min_pour_coin,
+          winCoin: 0,
+          result: '',
+          keep: [],
+          cards: origin.cards
+        })
+        // game.pourCoin = 0;
+        // game.bonusCoin = 0;
+        // game.result = '';
+        // game.keep = [];
+        // game.cards = origin.cards;
+
+        // 奖金表格
+        statusLab.text(state.desc);
+        resultText.text(game.result);
+        pourCoinLab.text(game.pourCoin);
+        bonusCoinLab.text(game.bonusCoin);
+
+        // 牌型表格
+        updateBonusTable(game.pourCoin);
+        updateCards(game.cards);
+
+        // 控制按钮
+        pourInput.val(game.pourCoin);
+        startBtn.text(state.playBtnLab);
+
+        // 牌面及hold的提示
+        for (let i = 0; i < 5; i += 1) {
+          cardLabels[i].isShown = false;
+          cardLabels[i].hide();
+        }
+
+        minusBtn.removeAttr('disabled');
+        plusBtn.removeAttr('disabled');
+      } else if (state.status === gameState.running) {
+        state.desc = 'Running';
+        state.playBtnLab = 'Switch';
+        // 修改状态提示和开始按钮的文本
+        statusLab.text(state.desc);
+        startBtn.text(state.playBtnLab);
+        pourCoinLab.text(game.pourCoin);
+
+        // 禁用加减注按钮
+        minusBtn.attr('disabled', 'disabled');
+        plusBtn.attr('disabled', 'disabled');
+      } else {
+        // 修改状态提示和开始按钮的文本
+        statusLab.text('ENDING');
+        startBtn.text('RESET');
+      }
+    };
+
+
+    // 开始按钮, 绑定点击事件
+    startBtn.on('click', () => {
+      // waiting -> running
+      if (state.status === gameState.waiting) {
+        if (game.pourCoin < room.min_pour_coin) {
+          console.error(`至少需要下注${room.min_pour_coin}`);
+          return;
+        }
+        if (game.totalCoin < room.min_user_coin) {
+          console.error(`你的金币不够进行本局游戏，本房间需要玩家至少拥有金币${room.min_user_coin}`);
+          return;
+        }
+        if (game.totalCoin > room.max_user_coin) {
+          console.error(`您的金币足够进入更高等级的房间${room.min_pour_coin}`);
+          return;
+        }
+        game.totalCoin -= game.pourCoin
+        totalCoinLab.text(game.totalCoin);
+        $.post(`${baseUrl}/game/pour`, {
+          coin: game.pourCoin,
+        }, (res) => {
+          if (res.code === 0) {
+            switchData(res.data);
+            updateCards(game.cards);
+            setToStatus(gameState.running);
+          } else {
+            alert(res.desc);
+            return;
+          }
+        });
+      } else if (state.status === gameState.running) {
+        console.log(game.keep);
+        $.post(`${baseUrl}/game/switch`, {
+          keep: game.keep
+        }, (res) => {
+          if (res.code === 0) {
+            switchData(res.data);
+            updateCards(game.cards);
+            resultText.text(game.result);
+            bonusCoinLab.text(game.bonusCoin);
+            totalCoinLab.text(game.totalCoin);
+            setToStatus(gameState.ending);
+            if (game.bonusCoin > 0) {
+              setTimeout(() => {
+                alert(`Congratulation! You have won ${game.bonusCoin}`);
+              }, 500);
+            } else {
+              setTimeout(() => {
+                alert(`Good Luck next time`);
+              }, 500);
+            }
+          } else {
+            alert(res.desc);
+            return;
+          }
+        });
+      } else {
+        setToStatus(gameState.waiting);
+      }
+    });
+
+  </script>
+</body>
+
+</html>

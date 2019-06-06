@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ATT连环炮</title>
+  <link rel="shortcut icon" href="/images/Coin.png" type="image/x-icon">
+  <link rel="stylesheet" href="/css/base.css">
+  <!--  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+  <link rel="stylesheet" href="/css/index.css">
+  <style>
+    div {
+      display: inline-block;
+      margin: 20px;
+    }
+
+    a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <header id="header">
+    <h1 class="title"><span style="color: red; margin-right: 20px;">|</span>请选择房间等级：</h1>
+    <div style="float: right">
+      <a href="/user" id="username"></a>
+      <!-- <img alt="profile" id="avatar"> -->
+      <ul>
+        <!-- <li>
+          <a href="/user/">user center</a>
+        </li>
+        <li>
+          <a href="/user/signin">signin</a>
+        </li> -->
+      </ul>
+      <p id="signature"></p>
+      <br>
+      <p>我的金币:</p>
+      <p id="coin"></p>
+    </div>
+  </header>
+
+  <div id="rooms"></div>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script>
+    'use strict';
+    let rooms = [];
+
+    /** 当前用户的用户信息 */
+    let userInfo = {
+      id: 0,
+      name: '',
+      avatar: '',
+      signature: '',
+      coin: 0
+    };
+
+    const baseUrl = ''; // 基础的url
+
+    const gameState = {
+      waiting: 0,
+      running: 1,
+      ending: 2,
+    };
+
+    const usernameLab = $('#username');
+    const signatureLab = $('#signature');
+    const avatarLab = $('#avatar');
+    const coinLab = $('#coin');
+
+    // const 
+
+    let roomsLab = [];
+
+    const updateRooms = (roomList) => {
+      const roomsBox = $('#rooms');
+      let html = '';
+      for (const room of roomList) {
+        html = `<div id="room_${room.id}">
+          <button><p>${room.name}</p></button>
+          <p>进场金币范围: ${room.min_user_coin}~${room.max_user_coin}</p>
+          <p>下注范围: ${room.min_pour_coin}~${room.max_pour_coin}</p>  
+        </div>`;
+        roomsBox.append(html);
+      }
+    };
+
+    const udpateUserInfo = () => {
+      usernameLab.text(userInfo.name);
+      signatureLab.text(userInfo.signature);
+      avatarLab.attr('src', userInfo.avatar);
+      coinLab.text(userInfo.coin);
+    };
+
+    const enterGame = (room) => {
+      if (userInfo.coin > room.max_user_coin || userInfo.coin < room.min_user_coin) {
+        console.error('您被限制不能进入此房间');
+        return;
+      }
+      $.post('/mode', { id: room.id }, (res) => {
+        if (res.code) {
+          console.error(res.desc);
+          return;
+        }
+        console.log(res);
+        window.location.href = res.data.next;
+      })
+    }
+
+    $(() => {
+
+      $.post('/user/init', {
+        code: 0,
+      }, (res) => {
+        if (res.code) {
+          alert(res.desc);
+          return;
+        }
+        console.log(res);
+        userInfo = res.data;
+        udpateUserInfo();
+      });
+
+      // request room list
+      $.post('/rooms', { code: 0 }, (res) => {
+        if (res.code) {
+          alert(res.desc);
+          return;
+        }
+        rooms = res.data.rooms;
+        updateRooms(rooms);
+        const roomsL = [];
+
+        for (let i = 0; i < rooms.length; i++) {
+          roomsL.push($(`#room_${rooms[i].id}`));
+        }
+        roomsLab = roomsL;
+
+        for (let i = 0; i < roomsLab.length; i++) {
+          roomsLab[i].on('click', (e) => {
+            console.log(rooms[i].id);
+            enterGame(rooms[i]);
+          });
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
